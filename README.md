@@ -118,22 +118,107 @@ deep-travel-agent/
 - Node.js 18+
 - npm 9+
 
-### Environment Variables
+### API Key Setup
 
-Copy `.env.example` to `.env` and configure:
+This application requires API keys from several external services. Follow the step-by-step guides below to obtain all necessary keys.
 
+#### Required API Keys
+
+##### 1. Google Gemini API (GOOGLE_API_KEY)
+**Purpose**: Powers the AI agent for intelligent travel planning
+**Cost**: Free tier with generous limits
+
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click "Create API Key"
+4. Copy the generated API key
+5. Add to `.env`: `GOOGLE_API_KEY=your-api-key-here`
+
+##### 2. Tavily API (TAVILY_API_KEY)
+**Purpose**: Web search functionality for destination research
+**Cost**: Free tier (1,000 searches/month), then $50/month
+
+1. Visit [Tavily](https://www.tavily.com/)
+2. Click "Sign Up" and create an account
+3. Navigate to your dashboard
+4. Find your API key in the "API Keys" section
+5. Add to `.env`: `TAVILY_API_KEY=your-api-key-here`
+
+##### 3. SerpAPI (SERPAPI_API_KEY)
+**Purpose**: Hotel and activity search functionality
+**Cost**: Free tier (100 searches/month), then $50/month for 5,000 searches
+
+1. Visit [SerpAPI](https://serpapi.com/)
+2. Click "Register" and create an account
+3. Go to your [dashboard](https://serpapi.com/dashboard)
+4. Find your "Secret API Key"
+5. Add to `.env`: `SERPAPI_API_KEY=your-api-key-here`
+
+##### 4. Duffel API (DUFFEL_API_KEY)
+**Purpose**: Flight search (no actual booking - search only)
+**Cost**: Free for search operations
+
+**Option A: Test Mode (Recommended First)**
+1. Visit [Duffel's registration page](https://app.duffel.com/join)
+2. Create account (use "Personal Use" for Company Name)
+3. Navigate to More > Developer in the dashboard
+4. Use the provided test API key (starts with `duffel_test`)
+5. Add to `.env`: `DUFFEL_API_KEY=duffel_test_...`
+
+**Option B: Live Mode**
+For live flight data, account verification and payment setup required:
+1. Complete account verification process
+2. Add payment information (no charges for search operations)
+3. Generate live API key from developer section
+4. Add to `.env`: `DUFFEL_API_KEY=duffel_live_...`
+
+##### 5. OpenWeather API (OPENWEATHER_API_KEY)
+**Purpose**: Weather integration for activity recommendations
+**Cost**: Free tier (1,000 calls/day)
+
+1. Visit [OpenWeatherMap](https://openweathermap.org/api)
+2. Click "Sign Up" and create a free account
+3. Go to [API Keys](https://home.openweathermap.org/api_keys)
+4. Copy your default API key (or create a new one)
+5. Add to `.env`: `OPENWEATHER_API_KEY=your-api-key-here`
+
+#### Optional API Keys
+
+##### LangSmith (for debugging and monitoring)
 ```bash
-# Required API Keys
-TAVILY_API_KEY=your-tavily-key          # Web search functionality
-ANTHROPIC_API_KEY=your-anthropic-key    # Claude model access
-DUFFEL_API_KEY=your-duffel-key         # Flight search
-SERPAPI_KEY=your-serpapi-key           # Hotel and activity search
-
-# Optional: LangSmith tracing
 LANGCHAIN_API_KEY=your-langsmith-key
 LANGCHAIN_TRACING_V2=true
 LANGCHAIN_PROJECT=deep-travel-agent
 ```
+
+#### Environment Setup
+
+1. **Copy the environment template**:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Add your API keys** to the `.env` file:
+   ```bash
+   # Required API Keys
+   GOOGLE_API_KEY=your-google-api-key
+   TAVILY_API_KEY=your-tavily-api-key
+   SERPAPI_API_KEY=your-serpapi-api-key
+   DUFFEL_API_KEY=your-duffel-api-key
+   OPENWEATHER_API_KEY=your-openweather-api-key
+
+   # Optional: LangSmith tracing
+   LANGCHAIN_API_KEY=your-langsmith-key
+   LANGCHAIN_TRACING_V2=true
+   LANGCHAIN_PROJECT=deep-travel-agent
+   ```
+
+#### Security Notes
+
+- **Never commit API keys**: The `.env` file is in `.gitignore`
+- **Use test keys first**: Start with Duffel test mode to verify functionality
+- **Monitor usage**: Check your API dashboards regularly for usage limits
+- **Rotate keys**: Regenerate keys if you suspect they've been compromised
 
 ### Development
 
