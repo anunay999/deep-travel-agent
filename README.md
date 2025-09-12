@@ -14,7 +14,7 @@ The foundation provides a solid base for agent-UI interactions, which was then e
 
 ## Architecture Overview
 
-![Architecture](./images/architecture.png)
+![Architecture](./public/architecture.png)
 
 ## Key Architectural Decisions
 
