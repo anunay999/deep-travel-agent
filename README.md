@@ -14,38 +14,7 @@ The foundation provides a solid base for agent-UI interactions, which was then e
 
 ## Architecture Overview
 
-```mermaid
-graph TB
-    User[👤 User] --> WebUI[🌐 Next.js UI<br/>LangChain Prebuilt Base]
-    WebUI --> LangGraphServer[🤖 LangGraph Agent<br/>Travel Coordinator]
-
-    LangGraphServer --> MemoryStore[(💾 Memory Saver<br/>Conversation State)]
-    LangGraphServer --> ItineraryStore[(📝 Itinerary Store<br/>File + In-Memory)]
-
-    LangGraphServer --> FlightTools[✈️ Flight Tools<br/>Duffel API]
-    LangGraphServer --> HotelTools[🏨 Hotel Tools<br/>SerpAPI]
-    LangGraphServer --> ActivityTools[🎯 Activity Tools<br/>SerpAPI + Weather]
-    LangGraphServer --> ItineraryTools[📋 Itinerary Tools<br/>State Management]
-    LangGraphServer --> SearchTools[🔍 Search Tools<br/>Tavily API]
-
-    FlightTools --> DuffelAPI[Duffel Flight API]
-    HotelTools --> SerpAPI[SerpAPI Hotels]
-    ActivityTools --> SerpAPI
-    ActivityTools --> WeatherAPI[Weather API]
-    SearchTools --> TavilyAPI[Tavily Search API]
-
-    classDef agent fill:#ff6b6b,stroke:#333,stroke-width:2px,color:#fff
-    classDef tools fill:#4ecdc4,stroke:#333,stroke-width:2px,color:#fff
-    classDef storage fill:#45b7d1,stroke:#333,stroke-width:2px,color:#fff
-    classDef external fill:#96ceb4,stroke:#333,stroke-width:2px,color:#fff
-    classDef ui fill:#feca57,stroke:#333,stroke-width:2px,color:#333
-
-    class LangGraphServer agent
-    class FlightTools,HotelTools,ActivityTools,ItineraryTools,SearchTools tools
-    class MemoryStore,ItineraryStore storage
-    class DuffelAPI,SerpAPI,WeatherAPI,TavilyAPI external
-    class User,WebUI ui
-```
+![Architecture](./images/architecture.png)
 
 ## Key Architectural Decisions
 
