@@ -83,7 +83,7 @@ graph TB
 **Decision**: Centralized tool coordination through single agent  
 **Tool Categories**:
 
-- **Flight Tools**: Search, filter, and book flights via Duffel API
+- **Flight Tools**: Search, filter, and book flights via Duffel Test API
 - **Hotel Tools**: Search and filter accommodations via SerpAPI
 - **Activity Tools**: Find attractions, restaurants, tours with weather integration
 - **Itinerary Tools**: Manage trip state, preferences, and budget tracking
