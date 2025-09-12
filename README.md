@@ -2,6 +2,10 @@
 
 An intelligent travel planning companion built with LangGraph and Next.js that orchestrates end-to-end trip planning through a single AI agent coordinating specialized tools.
 
+# Demo
+
+[Demo](https://www.loom.com/share/f995f849e58a412792208549fce475d1?sid=1b85b46b-8534-46d0-a175-a3d350ff4abc)
+
 ## Project Foundation
 
 This application is built upon LangChain's prebuilt agent chat UI foundation, created using:
@@ -125,6 +129,7 @@ This application requires API keys from several external services. Follow the st
 #### Required API Keys
 
 ##### 1. Google Gemini API (GOOGLE_API_KEY)
+
 **Purpose**: Powers the AI agent for intelligent travel planning
 **Cost**: Free tier with generous limits
 
@@ -135,6 +140,7 @@ This application requires API keys from several external services. Follow the st
 5. Add to `.env`: `GOOGLE_API_KEY=your-api-key-here`
 
 ##### 2. Tavily API (TAVILY_API_KEY)
+
 **Purpose**: Web search functionality for destination research
 **Cost**: Free tier (1,000 searches/month), then $50/month
 
@@ -145,6 +151,7 @@ This application requires API keys from several external services. Follow the st
 5. Add to `.env`: `TAVILY_API_KEY=your-api-key-here`
 
 ##### 3. SerpAPI (SERPAPI_API_KEY)
+
 **Purpose**: Hotel and activity search functionality
 **Cost**: Free tier (100 searches/month), then $50/month for 5,000 searches
 
@@ -155,10 +162,12 @@ This application requires API keys from several external services. Follow the st
 5. Add to `.env`: `SERPAPI_API_KEY=your-api-key-here`
 
 ##### 4. Duffel API (DUFFEL_API_KEY)
+
 **Purpose**: Flight search (no actual booking - search only)
 **Cost**: Free for search operations
 
 **Option A: Test Mode (Recommended First)**
+
 1. Visit [Duffel's registration page](https://app.duffel.com/join)
 2. Create account (use "Personal Use" for Company Name)
 3. Navigate to More > Developer in the dashboard
@@ -167,24 +176,16 @@ This application requires API keys from several external services. Follow the st
 
 **Option B: Live Mode**
 For live flight data, account verification and payment setup required:
+
 1. Complete account verification process
 2. Add payment information (no charges for search operations)
 3. Generate live API key from developer section
 4. Add to `.env`: `DUFFEL_API_KEY=duffel_live_...`
 
-##### 5. OpenWeather API (OPENWEATHER_API_KEY)
-**Purpose**: Weather integration for activity recommendations
-**Cost**: Free tier (1,000 calls/day)
-
-1. Visit [OpenWeatherMap](https://openweathermap.org/api)
-2. Click "Sign Up" and create a free account
-3. Go to [API Keys](https://home.openweathermap.org/api_keys)
-4. Copy your default API key (or create a new one)
-5. Add to `.env`: `OPENWEATHER_API_KEY=your-api-key-here`
-
 #### Optional API Keys
 
 ##### LangSmith (for debugging and monitoring)
+
 ```bash
 LANGCHAIN_API_KEY=your-langsmith-key
 LANGCHAIN_TRACING_V2=true
@@ -194,11 +195,13 @@ LANGCHAIN_PROJECT=deep-travel-agent
 #### Environment Setup
 
 1. **Copy the environment template**:
+
    ```bash
    cp .env.example .env
    ```
 
 2. **Add your API keys** to the `.env` file:
+
    ```bash
    # Required API Keys
    GOOGLE_API_KEY=your-google-api-key
