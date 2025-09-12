@@ -4,7 +4,8 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": ["TAVILY_API_KEY", "GOOGLE_API_KEY", "DUFFEL_API_KEY", "SERPAPI_API_KEY"]
     },
     "lint": {
       "dependsOn": ["^lint"]
