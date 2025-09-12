@@ -29,7 +29,7 @@
     "eslint-plugin-prettier": "^5.2.3",
     "prettier": "^3.3.3"
   },
-  "packageManager": "npm@10.9.2",
+  "packageManager": "npm@11.2.1",
   "overrides": {
     "@langchain/core": "^0.3.42"
   }
