@@ -2,6 +2,9 @@
 
 An intelligent travel planning companion built with LangGraph and Next.js that orchestrates end-to-end trip planning through a single AI agent coordinating specialized tools.
 
+> [!TIP]
+> Don't want to run the app locally? Use the deployed site here: [deep-travel-agent-production.up.railway.app](https://deep-travel-agent-production.up.railway.app)!
+
 # Demo
 
 [Demo](https://www.loom.com/share/f995f849e58a412792208549fce475d1?sid=1b85b46b-8534-46d0-a175-a3d350ff4abc)
@@ -275,6 +278,81 @@ LANGCHAIN_PROJECT=deep-travel-agent
 - `npm run dev` - Start Next.js development server
 - `npm run build` - Build Next.js application
 - `npm run start` - Start production server
+
+## Production Deployment (Railway)
+
+### Deployment Challenges
+
+This application faces challenges when deploying to platforms like Railway due to its monorepo structure with separate workspaces:
+
+- **Web app** runs on port 3000 (Next.js frontend)
+- **Agents app** runs on port 2024 (LangGraph API server)
+
+### Key Issues & Solutions
+
+#### 1. Cross-Origin Browser Requests
+
+**Problem**: In production, the browser cannot directly call `http://localhost:2024` because:
+
+- `localhost` refers to the user's machine, not the server
+- Creates CORS and mixed-content security issues with HTTPS
+
+**Solution**: Implemented reverse proxy using Next.js rewrites in `apps/web/next.config.mjs`:
+
+```javascript
+const LANGGRAPH_BASE_URL =
+  process.env.LANGGRAPH_BASE_URL || "http://localhost:2024";
+
+const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/langgraph/:path*",
+        destination: `${LANGGRAPH_BASE_URL}/:path*`,
+      },
+    ];
+  },
+};
+```
+
+#### 2. URL Construction Errors
+
+- URL normalization in `apps/web/src/providers/Stream.tsx`:
+- Converts relative URLs to absolute URLs at runtime
+- Maintains compatibility with both local development and production
+
+### Railway Deployment Steps
+
+1. **Environment Configuration**:
+   ```bash
+   # Set in Railway dashboard
+   LANGGRAPH_BASE_URL=http://localhost:2024  # Internal container communication
+   GOOGLE_API_KEY=your-api-key
+   TAVILY_API_KEY=your-api-key
+   SERPAPI_API_KEY=your-api-key
+   DUFFEL_API_KEY=your-api-key
+   ```
+2. **Service Communication**:
+   - Frontend uses same-origin requests to `/langgraph/`
+   - Next.js server forwards requests to LangGraph API internally
+   - No CORS issues or mixed-content problems
+
+### Troubleshooting
+
+**Health Check**: Test API connectivity at `https://deep-travel-agent-production.up.railway.app/langgraph/info`
+
+**Common Issues**:
+
+- **"Invalid URL" errors**: Ensure URL normalization is working
+- **404 on /langgraph/**: Check `LANGGRAPH_BASE_URL` environment variable
+- **Connection refused**: Verify agents app is bound to correct interface (`0.0.0.0:2024`)
+
+**Development vs Production**:
+
+- **Local**: Direct connection to `http://localhost:2024`
+- **Production**: Proxied through `/langgraph/` endpoint
+
+This architecture ensures seamless deployment while maintaining the benefits of the monorepo structure and avoiding common multi-service deployment pitfalls.
 
 ## Key Features
 
