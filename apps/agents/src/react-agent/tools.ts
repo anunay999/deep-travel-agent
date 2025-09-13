@@ -13,8 +13,11 @@ import { ITINERARY_TOOLS } from "../tools/itinerary/tools.js";
  * Tavily search tool configuration
  * This tool allows the agent to perform web searches using the Tavily API.
  */
+const tavilyApiKey = process.env.TAVILY_API_KEY;
+
 const searchTavily = new TavilySearch({
   maxResults: 3,
+  tavilyApiKey,
 });
 
 /**

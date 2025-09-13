@@ -10,7 +10,8 @@
     "start": {
       "dependsOn": ["build"],
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["TAVILY_API_KEY", "GOOGLE_API_KEY", "DUFFEL_API_KEY", "SERPAPI_API_KEY", "LANGGRAPH_API_URL", "NEXT_PUBLIC_ASSISTANT_ID"]
     },
     "lint": {
       "dependsOn": ["^lint"]
