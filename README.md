@@ -93,7 +93,7 @@ The foundation provides a solid base for agent-UI interactions, which was then e
 
 ### 3. Memory and Autonomy
 
-**Decision**: MemorySaver checkpoint system with recursion limit of 300  
+**Decision**: MemorySaver checkpoint system with recursion limit of 700  
 **Benefits**:
 
 - Conversation continuity across interactions

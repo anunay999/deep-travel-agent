@@ -38,4 +38,4 @@ const agent = createReactAgent({
 });
 
 // Set a higher default recursion limit so complex runs don't stop prematurely
-export const graph = agent.withConfig({ recursionLimit: 300 });
+export const graph = agent.withConfig({ recursionLimit: 700 });
