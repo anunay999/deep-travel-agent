@@ -74,10 +74,23 @@ const StreamSession = ({
   apiUrl: string;
   assistantId: string;
 }) => {
+  // Ensure apiUrl is absolute; SDK may construct URL objects that require it
+  const resolvedApiUrl = (() => {
+    try {
+      if (!apiUrl) return apiUrl;
+      if (/^https?:\/\//i.test(apiUrl)) return apiUrl.replace(/\/$/, "");
+      if (typeof window !== "undefined") {
+        return new URL(apiUrl, window.location.origin).toString().replace(/\/$/, "");
+      }
+      return apiUrl;
+    } catch {
+      return apiUrl;
+    }
+  })();
   const [threadId, setThreadId] = useQueryState("threadId");
   const { getThreads, setThreads } = useThreads();
   const streamValue = useTypedStream({
-    apiUrl,
+    apiUrl: resolvedApiUrl,
     apiKey: apiKey ?? undefined,
     assistantId,
     threadId: threadId ?? null,
@@ -96,12 +109,12 @@ const StreamSession = ({
   });
 
   useEffect(() => {
-    checkGraphStatus(apiUrl, apiKey).then((ok) => {
+    checkGraphStatus(resolvedApiUrl, apiKey).then((ok) => {
       if (!ok) {
         toast.error("Failed to connect to LangGraph server", {
           description: () => (
             <p>
-              Please ensure your graph is running at <code>{apiUrl}</code> and
+              Please ensure your graph is running at <code>{resolvedApiUrl}</code> and
               your API key is correctly set (if connecting to a deployed graph).
             </p>
           ),
@@ -111,7 +124,7 @@ const StreamSession = ({
         });
       }
     });
-  }, [apiKey, apiUrl]);
+  }, [apiKey, resolvedApiUrl]);
 
   return (
     <StreamContext.Provider value={streamValue}>
@@ -121,14 +134,15 @@ const StreamSession = ({
 };
 
 // Default values for the form
-const DEFAULT_API_URL = "http://localhost:2024";
+const DEFAULT_API_URL = "/langgraph";
 const DEFAULT_ASSISTANT_ID = "agent";
 
 export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   // Get environment variables
-  const envApiUrl: string | undefined = process.env.NEXT_PUBLIC_API_URL;
+  const envApiUrl: string | undefined =
+    process.env.LANGGRAPH_BASE_URL || DEFAULT_API_URL;
   const envAssistantId: string | undefined =
     process.env.NEXT_PUBLIC_ASSISTANT_ID;
   const envApiKey: string | undefined =
@@ -154,8 +168,9 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   // Determine final values to use, prioritizing URL params then env vars
-  const finalApiUrl = apiUrl || envApiUrl;
-  const finalAssistantId = assistantId || envAssistantId;
+  const finalApiUrl = apiUrl || envApiUrl || DEFAULT_API_URL;
+  const finalAssistantId =
+    assistantId || envAssistantId || DEFAULT_ASSISTANT_ID;
 
   // If we're missing any required values, show the form
   if (!finalApiUrl || !finalAssistantId) {
@@ -257,7 +272,7 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   }
 
   return (
-    <StreamSession apiKey={apiKey} apiUrl={apiUrl} assistantId={assistantId}>
+    <StreamSession apiKey={apiKey} apiUrl={finalApiUrl} assistantId={finalAssistantId}>
       {children}
     </StreamSession>
   );
