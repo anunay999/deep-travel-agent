@@ -24,7 +24,9 @@ An intelligent travel planning companion built with LangGraph and Next.js that o
 
 ## Demo
 
-[Demo](https://www.loom.com/share/f995f849e58a412792208549fce475d1?sid=1b85b46b-8534-46d0-a175-a3d350ff4abc)
+<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe src="https://www.loom.com/embed/ae0206f18583439f90003b2b7d9f2731?sid=f9c8d6db-49a1-4bb1-86d1-a7f4bf7b54e9" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+
+[Watch the demo](https://www.loom.com/share/ae0206f18583439f90003b2b7d9f2731?sid=a6a996d7-a141-4e65-b352-7ad3fb00b953)
 
 ## Quick Start
 
