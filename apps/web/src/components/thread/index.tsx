@@ -12,7 +12,7 @@ import {
   DO_NOT_RENDER_ID_PREFIX,
   ensureToolCallsHaveResponses,
 } from "@/lib/ensure-tool-responses";
-import { LangGraphLogoSVG } from "../icons/langgraph";
+import { FaviconSVG } from "../icons/favicon";
 import { TooltipIconButton } from "./tooltip-icon-button";
 import {
   ArrowDown,
@@ -80,7 +80,7 @@ function OpenGitHubRepo() {
       <Tooltip>
         <TooltipTrigger asChild>
           <a
-            href="https://github.com/langchain-ai/agent-chat-ui"
+            href="https://github.com/anunay999/deep-travel-agent"
             target="_blank"
             className="flex items-center justify-center"
           >
@@ -324,9 +324,9 @@ export function Thread() {
                   damping: 30,
                 }}
               >
-                <LangGraphLogoSVG width={32} height={32} />
+                <FaviconSVG width={40} height={40} />
                 <span className="text-xl font-semibold tracking-tight">
-                  Agent Chat
+                  Deep Travel Agent
                 </span>
               </motion.button>
             </div>
@@ -397,9 +397,9 @@ export function Thread() {
               <div className="sticky flex flex-col items-center gap-8 bottom-0 bg-white">
                 {!chatStarted && (
                   <div className="flex gap-3 items-center">
-                    <LangGraphLogoSVG className="flex-shrink-0 h-8" />
+                    <FaviconSVG className="flex-shrink-0 h-12" />
                     <h1 className="text-2xl font-semibold tracking-tight">
-                      Agent Chat
+                      Deep Travel Agent
                     </h1>
                   </div>
                 )}
