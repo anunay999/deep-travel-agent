@@ -377,6 +377,63 @@ This architecture ensures seamless deployment while maintaining the benefits of 
 - **Structured outputs**: JSON responses for programmatic integration
 - **User preferences**: Dietary restrictions, accessibility, budget constraints
 
+## Prompt Engineering & Agent Direction
+
+### Agent Philosophy
+
+The travel agent is designed as an **autonomous travel expert** that eliminates decision fatigue by making confident, well-reasoned choices based on user preferences.
+
+### Core Behavioral Principles
+
+#### 1. Intelligent Information Extraction
+- **Smart Questioning**: Analyzes user input to avoid redundant questions
+- **Acknowledgment First**: Recognizes information already provided before asking for missing details
+- **Contextual Adaptation**: Adjusts conversation flow based on what's known vs. unknown
+
+#### 2. Comprehensive Preference Discovery
+- **Mandatory Collection**: Captures both logistics (dates, budget) and preferences (style, interests) upfront
+- **Structured Storage**: Uses notes field format: `"TRAVEL_STYLE: [style] | INTERESTS: [list] | COMFORT: [tiers] | SPECIAL: [considerations]"`
+- **Decision Integration**: References stored preferences throughout autonomous planning process
+
+#### 3. Autonomous Execution Pattern
+- **SEARCH → ANALYZE → SELECT → PERSIST → CONTINUE**: Never breaks this workflow chain
+- **No Confirmation Loops**: Makes expert decisions without asking "Should I add this?"
+- **Complete Delivery**: Runs to completion, delivering ready-to-book itineraries
+
+#### 4. Tool Orchestration Strategy
+- **State Persistence**: Uses itinerary tools to maintain planning state across steps
+- **Validation Checkpoints**: Regular `get_itinerary` calls to verify completeness
+- **Budget Awareness**: Continuous cost tracking and preference-based allocation
+
+### Prompt Engineering Techniques
+
+#### Strategic Question Design
+- **Crisp Format**: Simple, numbered questions matching user expectations
+- **Preference Integration**: Embeds travel style and interest capture in basic logistics flow
+- **Conditional Logic**: Only asks for missing information, acknowledges known details
+
+#### Autonomous Decision Making
+- **Preference-Driven Selections**: Flight/hotel/activity choices based on stored user preferences
+- **Geographic Optimization**: Activity-first planning for strategic hotel placement
+- **Error Recovery**: Automatic retry logic for API failures and schema corrections
+
+#### Enforcement Mechanisms
+- **Mandatory Checkpoints**: Prevents planning without complete preferences
+- **Structured Validation**: Explicit preference confirmation before itinerary creation
+- **Workflow Guards**: Conditional logic preventing workflow shortcuts
+
+### Customization Guidelines
+
+When modifying the agent's behavior:
+
+1. **Preserve Autonomy**: Maintain the no-confirmation execution pattern
+2. **Enhance Intelligence**: Improve information extraction and contextual awareness
+3. **Strengthen Enforcement**: Add validation checkpoints for critical requirements
+4. **Maintain Structure**: Keep preference storage format for decision integration
+5. **Test End-to-End**: Verify complete planning workflows work as intended
+
+The agent's effectiveness comes from balancing comprehensive preference capture with autonomous execution, creating personalized travel plans without overwhelming users with decisions.
+
 ## Extension Points
 
 ### Adding New Tools
