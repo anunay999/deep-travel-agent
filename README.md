@@ -208,13 +208,23 @@ LANGCHAIN_PROJECT=deep-travel-agent
    TAVILY_API_KEY=your-tavily-api-key
    SERPAPI_API_KEY=your-serpapi-api-key
    DUFFEL_API_KEY=your-duffel-api-key
-   OPENWEATHER_API_KEY=your-openweather-api-key
+
+   NEXT_PUBLIC_API_URL="http://localhost:2024"
+   NEXT_PUBLIC_ASSISTANT_ID="your-assistant-id"
 
    # Optional: LangSmith tracing
    LANGCHAIN_API_KEY=your-langsmith-key
    LANGCHAIN_TRACING_V2=true
    LANGCHAIN_PROJECT=deep-travel-agent
    ```
+
+> **Note:**  
+> The following environment variables are used to configure the frontend's connection to the LangGraph server and to identify the agent:
+>
+> - `NEXT_PUBLIC_API_URL` sets the base URL for the LangGraph API server (default: `http://localhost:2024` for local development).
+> - `NEXT_PUBLIC_ASSISTANT_ID` specifies the agent's unique identifier or name, which is used by the UI to route messages to the correct agent instance.
+>
+> Make sure these values match your backend server and agent configuration. If you deploy to production, update `NEXT_PUBLIC_API_URL` to your deployed LangGraph server's address, and set `NEXT_PUBLIC_ASSISTANT_ID` to the correct agent name or ID.
 
 #### Security Notes
 
@@ -256,6 +266,7 @@ LANGCHAIN_PROJECT=deep-travel-agent
 #### Agents App (`apps/agents`)
 
 - `npm run dev` - Start LangGraph dev server (port 2024)
+- `npm run start` - Start LangGraph production server (port 2024)
 - `npm run build` - Clean and compile TypeScript
 - `npm run lint` - Run ESLint on source
 
