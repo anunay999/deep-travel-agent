@@ -131,7 +131,7 @@ export function Thread() {
       lastError.current = message;
       const isRecursionError = message?.toLowerCase().includes("recursion");
       if (isRecursionError) {
-        toast("Recursion limit reached", {
+        const toastId = toast("Recursion limit reached", {
           description: (
             <div className="flex flex-col gap-2">
               <p>
@@ -144,6 +144,8 @@ export function Thread() {
                   onClick={() => {
                     // Resume the last run from its checkpoint
                     stream.submit(undefined, { streamMode: ["values"] });
+                    // Dismiss the toast when Continue is clicked
+                    toast.dismiss(toastId);
                   }}
                 >
                   Continue
@@ -151,6 +153,7 @@ export function Thread() {
               </div>
             </div>
           ),
+          duration: Infinity, // Persist until manually dismissed
         });
       } else {
         toast.error("An error occurred. Please try again.", {
