@@ -5,9 +5,56 @@ An intelligent travel planning companion built with LangGraph and Next.js that o
 > [!TIP]
 > Don't want to run the app locally? Use the deployed site here: [deep-travel-agent-production.up.railway.app](https://deep-travel-agent-production.up.railway.app)!
 
-# Demo
+## Table of Contents
+
+- [Demo](#demo)
+- [Quick Start](#quick-start)
+- [Project Foundation](#project-foundation)
+- [Architecture Overview](#architecture-overview)
+- [Key Architectural Decisions](#key-architectural-decisions)
+- [Project Structure](#project-structure)
+- [Technology Stack](#technology-stack)
+- [Setup Instructions](#setup-instructions)
+- [Available Commands](#available-commands)
+- [Production Deployment](#production-deployment-railway)
+- [Key Features](#key-features)
+- [Troubleshooting](#troubleshooting)
+- [Extension Points](#extension-points)
+- [Contributing](#contributing)
+
+## Demo
 
 [Demo](https://www.loom.com/share/f995f849e58a412792208549fce475d1?sid=1b85b46b-8534-46d0-a175-a3d350ff4abc)
+
+## Quick Start
+
+Want to try it immediately? Follow these minimal steps:
+
+1. **Clone and install**:
+
+   ```bash
+   git clone <repo-url>
+   cd deep-travel-agent
+   npm install
+   ```
+
+2. **Set up environment**:
+
+   ```bash
+   cp .env.example .env
+   # Add your GOOGLE_API_KEY (get free key from Google AI Studio)
+   # Other APIs optional for testing
+   ```
+
+3. **Start the application**:
+
+   ```bash
+   npm run dev
+   ```
+
+4. **Open and test**: Visit http://localhost:3000 and ask for a travel plan!
+
+> **Note**: The app works with just a Google API key. Other services enhance functionality but aren't required for basic testing.
 
 ## Project Foundation
 
@@ -83,14 +130,27 @@ deep-travel-agent/
 │   ├── agents/              # LangGraph AI agents
 │   │   └── src/
 │   │       ├── react-agent/ # Main travel coordinator agent
+│   │       │   ├── graph.ts         # Agent workflow graph
+│   │       │   ├── tools.ts         # Tool orchestration
+│   │       │   ├── prompts.ts       # System prompts
+│   │       │   ├── configuration.ts # Agent config
+│   │       │   └── tests/           # Unit & integration tests
 │   │       └── tools/       # Specialized travel tools
 │   │           ├── flight/      # Duffel API integration
 │   │           ├── hotel/       # SerpAPI hotel search
 │   │           ├── activities/  # SerpAPI activities + weather
-│   │           └── itinerary/   # State management tools
+│   │           ├── itinerary/   # State management tools
+│   │           └── index.ts     # Tool exports & search tools
 │   └── web/                 # Next.js frontend (LangChain base)
+│       └── src/
+│           ├── components/      # UI components
+│           │   ├── thread/         # Chat interface
+│           │   └── ui/             # Reusable components
+│           ├── providers/       # React context providers
+│           └── hooks/           # Custom React hooks
 ├── langgraph.json          # LangGraph configuration
-└── turbo.json             # Turbo monorepo config
+├── turbo.json             # Turbo monorepo config
+└── .env.example           # Environment template
 ```
 
 ## Technology Stack
@@ -99,7 +159,7 @@ deep-travel-agent/
 
 - **LangGraph**: Agent orchestration framework
 - **LangChain**: LLM integration and tooling
-- **Anthropic**: Claude model integration
+- **Google Gemini**: AI model integration (gemini-2.0-flash-exp)
 - **TypeScript**: Type safety and development experience
 - **Zod**: Schema validation for tool inputs/outputs
 
@@ -133,14 +193,15 @@ This application requires API keys from several external services. Follow the st
 
 ##### 1. Google Gemini API (GOOGLE_API_KEY)
 
-**Purpose**: Powers the AI agent for intelligent travel planning
-**Cost**: Free tier with generous limits
+**Purpose**: Powers the AI agent for intelligent travel planning (uses Gemini 2.0 Flash model)
 
 1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
 2. Sign in with your Google account
 3. Click "Create API Key"
 4. Copy the generated API key
 5. Add to `.env`: `GOOGLE_API_KEY=your-api-key-here`
+
+> **Note**: This is the only required API key to start testing the application. Other APIs enhance functionality but the agent will work with web search fallbacks.
 
 ##### 2. Tavily API (TAVILY_API_KEY)
 
@@ -212,8 +273,12 @@ LANGCHAIN_PROJECT=deep-travel-agent
    SERPAPI_API_KEY=your-serpapi-api-key
    DUFFEL_API_KEY=your-duffel-api-key
 
+   # Frontend Configuration
    NEXT_PUBLIC_API_URL="http://localhost:2024"
-   NEXT_PUBLIC_ASSISTANT_ID="your-assistant-id"
+   NEXT_PUBLIC_ASSISTANT_ID="agent"
+
+   # Production Configuration (optional)
+   LANGGRAPH_BASE_URL="http://localhost:2024"
 
    # Optional: LangSmith tracing
    LANGCHAIN_API_KEY=your-langsmith-key
@@ -221,13 +286,13 @@ LANGCHAIN_PROJECT=deep-travel-agent
    LANGCHAIN_PROJECT=deep-travel-agent
    ```
 
-> **Note:**  
-> The following environment variables are used to configure the frontend's connection to the LangGraph server and to identify the agent:
+> **Environment Variables Explained:**
 >
-> - `NEXT_PUBLIC_API_URL` sets the base URL for the LangGraph API server (default: `http://localhost:2024` for local development).
-> - `NEXT_PUBLIC_ASSISTANT_ID` specifies the agent's unique identifier or name, which is used by the UI to route messages to the correct agent instance.
+> - `NEXT_PUBLIC_API_URL`: Frontend connection to LangGraph server (default: `http://localhost:2024`)
+> - `NEXT_PUBLIC_ASSISTANT_ID`: Agent identifier for routing messages (use "agent" for this project)
+> - `LANGGRAPH_BASE_URL`: Production proxy configuration for Next.js rewrites
 >
-> Make sure these values match your backend server and agent configuration. If you deploy to production, update `NEXT_PUBLIC_API_URL` to your deployed LangGraph server's address, and set `NEXT_PUBLIC_ASSISTANT_ID` to the correct agent name or ID.
+> For production deployments, update `NEXT_PUBLIC_API_URL` to your deployed server address and ensure `LANGGRAPH_BASE_URL` points to your LangGraph server.
 
 #### Security Notes
 
@@ -255,6 +320,32 @@ LANGCHAIN_PROJECT=deep-travel-agent
 3. **Access the application**:
    - Web UI: http://localhost:3000
    - LangGraph API: http://localhost:2024
+   - API Health Check: http://localhost:2024/info
+
+4. **Verify setup**:
+   - Check API connectivity at http://localhost:2024/info
+   - Test agent response by asking for a simple travel plan
+   - Monitor console for any API key errors
+
+#### Testing
+
+**Agents Application Tests**:
+
+```bash
+cd apps/agents
+npm test                    # Run all tests
+npm run test:unit          # Unit tests only
+npm run test:integration   # Integration tests only
+```
+
+**Manual Testing Checklist**:
+
+- [ ] Agent responds to basic queries
+- [ ] Flight search works (if Duffel API configured)
+- [ ] Hotel search works (if SerpAPI configured)
+- [ ] Activity recommendations work
+- [ ] Itinerary persistence works
+- [ ] Error handling for missing APIs works
 
 ### Available Commands
 
@@ -324,17 +415,33 @@ const nextConfig = {
 ### Railway Deployment Steps
 
 1. **Environment Configuration**:
+
    ```bash
-   # Set in Railway dashboard
-   LANGGRAPH_BASE_URL=http://localhost:2024  # Internal container communication
+   # Set in Railway dashboard - Required API Keys
    GOOGLE_API_KEY=your-api-key
    TAVILY_API_KEY=your-api-key
    SERPAPI_API_KEY=your-api-key
    DUFFEL_API_KEY=your-api-key
+
+   # Production Configuration
+   LANGGRAPH_BASE_URL=http://localhost:2024  # Internal container communication
+   NEXT_PUBLIC_API_URL=/langgraph             # Use relative URL for production
+   NEXT_PUBLIC_ASSISTANT_ID=agent
+
+   # Optional: Monitoring
+   LANGCHAIN_TRACING_V2=true
+   LANGCHAIN_API_KEY=your-langsmith-key
+   LANGCHAIN_PROJECT=deep-travel-agent-prod
    ```
-2. **Service Communication**:
+
+2. **Deploy Configuration**:
+   - Create two services: one for web app, one for agents app
+   - Ensure both services can communicate internally
+   - Web app should proxy requests to agents service via Next.js rewrites
+
+3. **Service Communication**:
    - Frontend uses same-origin requests to `/langgraph/`
-   - Next.js server forwards requests to LangGraph API internally
+   - Next.js server forwards requests to LangGraph API internally via `LANGGRAPH_BASE_URL`
    - No CORS issues or mixed-content problems
 
 ### Troubleshooting
@@ -386,21 +493,25 @@ The travel agent is designed as an **autonomous travel expert** that eliminates 
 ### Core Behavioral Principles
 
 #### 1. Intelligent Information Extraction
+
 - **Smart Questioning**: Analyzes user input to avoid redundant questions
 - **Acknowledgment First**: Recognizes information already provided before asking for missing details
 - **Contextual Adaptation**: Adjusts conversation flow based on what's known vs. unknown
 
 #### 2. Comprehensive Preference Discovery
+
 - **Mandatory Collection**: Captures both logistics (dates, budget) and preferences (style, interests) upfront
 - **Structured Storage**: Uses notes field format: `"TRAVEL_STYLE: [style] | INTERESTS: [list] | COMFORT: [tiers] | SPECIAL: [considerations]"`
 - **Decision Integration**: References stored preferences throughout autonomous planning process
 
 #### 3. Autonomous Execution Pattern
+
 - **SEARCH → ANALYZE → SELECT → PERSIST → CONTINUE**: Never breaks this workflow chain
 - **No Confirmation Loops**: Makes expert decisions without asking "Should I add this?"
 - **Complete Delivery**: Runs to completion, delivering ready-to-book itineraries
 
 #### 4. Tool Orchestration Strategy
+
 - **State Persistence**: Uses itinerary tools to maintain planning state across steps
 - **Validation Checkpoints**: Regular `get_itinerary` calls to verify completeness
 - **Budget Awareness**: Continuous cost tracking and preference-based allocation
@@ -408,16 +519,19 @@ The travel agent is designed as an **autonomous travel expert** that eliminates 
 ### Prompt Engineering Techniques
 
 #### Strategic Question Design
+
 - **Crisp Format**: Simple, numbered questions matching user expectations
 - **Preference Integration**: Embeds travel style and interest capture in basic logistics flow
 - **Conditional Logic**: Only asks for missing information, acknowledges known details
 
 #### Autonomous Decision Making
+
 - **Preference-Driven Selections**: Flight/hotel/activity choices based on stored user preferences
 - **Geographic Optimization**: Activity-first planning for strategic hotel placement
 - **Error Recovery**: Automatic retry logic for API failures and schema corrections
 
 #### Enforcement Mechanisms
+
 - **Mandatory Checkpoints**: Prevents planning without complete preferences
 - **Structured Validation**: Explicit preference confirmation before itinerary creation
 - **Workflow Guards**: Conditional logic preventing workflow shortcuts
@@ -433,6 +547,80 @@ When modifying the agent's behavior:
 5. **Test End-to-End**: Verify complete planning workflows work as intended
 
 The agent's effectiveness comes from balancing comprehensive preference capture with autonomous execution, creating personalized travel plans without overwhelming users with decisions.
+
+## Troubleshooting
+
+### Common Setup Issues
+
+#### "Connection refused" or "Cannot connect to localhost:2024"
+
+**Symptoms**: Frontend shows connection errors, API calls fail
+**Solutions**:
+
+1. Ensure agents server is running: `npm run dev` or check if port 2024 is occupied
+2. Verify `NEXT_PUBLIC_API_URL` in `.env` matches the agents server URL
+3. Check LangGraph server logs for startup errors
+
+#### "Invalid API key" or "Authentication failed"
+
+**Symptoms**: Agent responses with API errors, specific service failures
+**Solutions**:
+
+1. Verify API keys are correctly set in `.env` file
+2. Test individual API keys:
+   - Google: Visit https://aistudio.google.com/ to verify key works
+   - Tavily: Check dashboard at https://app.tavily.com/
+   - SerpAPI: Test at https://serpapi.com/dashboard
+3. Ensure `.env` file is in the root directory, not in `apps/` subdirectories
+
+#### "Agent not found" or routing errors
+
+**Symptoms**: Messages not reaching the agent, empty responses
+**Solutions**:
+
+1. Verify `NEXT_PUBLIC_ASSISTANT_ID="agent"` matches `langgraph.json` configuration
+2. Check LangGraph server is exposing the correct agent endpoint
+3. Test agent directly: `curl http://localhost:2024/info`
+
+#### Build or dependency errors
+
+**Symptoms**: `npm install` or `npm run dev` fails
+**Solutions**:
+
+1. Clear node_modules and reinstall: `rm -rf node_modules package-lock.json && npm install`
+2. Ensure Node.js version 18+ is installed
+3. Check for conflicting global packages: `npm ls -g --depth=0`
+
+### Development Tips
+
+#### LangSmith Debugging
+
+Enable detailed tracing for debugging:
+
+```bash
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=your-langsmith-key
+LANGCHAIN_PROJECT=deep-travel-agent
+```
+
+#### API Rate Limits
+
+- **Google Gemini**: 15 requests/minute on free tier
+- **Tavily**: 1,000 searches/month on free tier
+- **SerpAPI**: 100 searches/month on free tier
+
+#### Performance Optimization
+
+- Use test/mock APIs during development to avoid rate limits
+- Enable LangSmith to monitor token usage and response times
+- Consider caching strategies for repeated API calls
+
+### Getting Help
+
+1. **Check logs**: Monitor both web and agents console output
+2. **Test APIs individually**: Verify each service works independently
+3. **Use health checks**: Test endpoints directly with curl or browser
+4. **Enable debugging**: Use LangSmith for detailed execution traces
 
 ## Extension Points
 
